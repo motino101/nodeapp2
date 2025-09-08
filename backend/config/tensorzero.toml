@@ -38,8 +38,15 @@ routing = ["my_anthropic_provider"]  # ✅ REQUIRED
 type = "anthropic"
 model_name = "claude-3-haiku-20240307"
 
+
+
 # Metrics
 [metrics.synthesis_quality]
 type = "float"
 optimize = "max"
 level = "inference"
+
+[metrics.user_rating]
+type = "float"
+optimize = "max"
+level = "episode"

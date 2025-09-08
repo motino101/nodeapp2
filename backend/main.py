@@ -32,13 +32,14 @@ with TensorZeroGateway.build_embedded(
     )
     print(query_resp)
     search_query = query_resp
+    episode_id = query_resp.episode_id
 
     # run second function - synthesise content
     relevant_chunks = get_relevant_chunks(search_query, all_chunks)
 
     response = client.inference(
         function_name="synthesise_content",
-        episode_id=query_resp.episode_id, # use episode id to link the two inferences
+        episode_id=episode_id, # use episode id to link the two inferences
         input={
             "messages": [
                 {
@@ -61,10 +62,12 @@ if feedback.isdigit() and 1 <= int(feedback) <= 5:
     # Use HTTP client for feedback
     with TensorZeroGateway.build_http(gateway_url="http://localhost:3000") as feedback_client:
         feedback_result = feedback_client.feedback(
-            metric_name="synthesis_quality",
-            inference_id=response.inference_id,
+            metric_name="user_rating",
+            episode_id=episode_id,
             value=float(rating),
         )
         print("Feedback recorded:", feedback_result)
+
+        
 else:
     print("Invalid input. Please enter a number between 1 and 5.")

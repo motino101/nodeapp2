@@ -1,4 +1,4 @@
-from tensorzero import TensorZeroGateway
+from tensorzero import TensorZeroGateway, ToolCall
 from retriever import build_chunks, get_relevant_chunks
 import json
 
@@ -38,6 +38,7 @@ with TensorZeroGateway.build_embedded(
 
     response = client.inference(
         function_name="synthesise_content",
+        episode_id=query_resp.episode_id, # use episode id to link the two inferences
         input={
             "messages": [
                 {

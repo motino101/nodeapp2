@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string"
+      },
+      "synthesis_purpose": {
+        "type": "string"
+      }
+    },
+    "required": ["content", "synthesis_purpose"],
+    "additionalProperties": false
+  }

@@ -1,0 +1,2 @@
+Question: {{ user_text }}
+Generate a concise search query:

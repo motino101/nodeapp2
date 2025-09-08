@@ -1,7 +1,13 @@
 from tensorzero import TensorZeroGateway
+from retriever import build_chunks, get_relevant_chunks
 import json
-# Example: take an input field (content) and a guidin
-# g question
+
+# --- Step 1: User provides a question ---
+question = "Synthesise my sources into a 1-minute video script about farming and climate change."
+
+# --- Step 2: Build source chunks ---
+all_chunks = build_chunks()
+
 
 with open("sample.json", "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -11,13 +17,32 @@ with TensorZeroGateway.build_embedded(
     clickhouse_url="http://chuser:chpassword@localhost:8123/tensorzero",
     config_file="config/tensorzero.toml",
 ) as client:
+
+    # run first function - reformulate question into search query
+    query_resp = client.inference(
+        function_name="generate_research_query",
+        input={
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Question: {question}",
+                }
+            ]
+        }
+    )
+    print(query_resp)
+    search_query = query_resp
+
+    # run second function - synthesise content
+    relevant_chunks = get_relevant_chunks(search_query, all_chunks)
+
     response = client.inference(
         function_name="synthesise_content",
         input={
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Please draft a piece of content using the following information:\n\n- Source content: {content}\n- Task: Synthesise my sources into a 1-minute video script."
+                    "content": f"Question: {question}\nSources: {relevant_chunks}",
                 }
             ]
         },

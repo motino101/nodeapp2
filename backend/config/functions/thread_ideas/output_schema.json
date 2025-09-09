@@ -19,13 +19,13 @@
               "type": "string",
               "description": "Very specific, one-sentence title that captures the exact insight",
               "minLength": 10,
-              "maxLength": 80
+              "maxLength": 120
             },
             "insight": {
               "type": "string",
               "description": "A detailed paragraph describing the specific insight and its implications",
               "minLength": 100,
-              "maxLength": 400
+              "maxLength": 800
             },
             "supporting_quotes": {
               "type": "array",

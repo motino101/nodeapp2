@@ -57,50 +57,61 @@ threading_response = client.inference(
 print("Threading complete. Found threads:")
 threads_data = threading_response.output.parsed
 
-for i, thread in enumerate(threads_data["threads"], 1):
-    print(f"{i}. {thread['title']}")
-    print(f"   {thread['insight']}")
-    print()
-
-# --- USER SELECTION STEP ---
-print("Which thread would you like to focus on for the video script?")
-print("Enter the number (1-{}) or 'all' to use all threads:".format(len(threads_data["threads"])))
-choice = input("Your choice: ").strip()
-
-selected_threads = []
-if choice.lower() == 'all':
-    selected_threads = threads_data["threads"]
-    print("Using all threads for synthesis...")
+if threads_data is None:
+    print("Error: No threads data received. Falling back to original sources only.")
+    # Fallback to original sources
+    synthesis_input = {
+        "input": question,
+        "sources": sources,
+        "threads": [],
+        "thread_summary": "No threads available - using original sources only",
+        "additional_instructions": ""
+    }
 else:
-    try:
-        thread_index = int(choice) - 1
-        if 0 <= thread_index < len(threads_data["threads"]):
-            selected_threads = [threads_data["threads"][thread_index]]
-            print(f"Selected thread: {selected_threads[0]['title']}")
-        else:
-            print("Invalid choice. Using all threads...")
-            selected_threads = threads_data["threads"]
-    except ValueError:
-        print("Invalid input. Using all threads...")
+    for i, thread in enumerate(threads_data["threads"], 1):
+        print(f"{i}. {thread['title']}")
+        print(f"   {thread['insight']}")
+        print()
+
+    # --- USER SELECTION STEP ---
+    print("Which thread would you like to focus on for the video script?")
+    print("Enter the number (1-{}) or 'all' to use all threads:".format(len(threads_data["threads"])))
+    choice = input("Your choice: ").strip()
+
+    selected_threads = []
+    if choice.lower() == 'all':
         selected_threads = threads_data["threads"]
+        print("Using all threads for synthesis...")
+    else:
+        try:
+            thread_index = int(choice) - 1
+            if 0 <= thread_index < len(threads_data["threads"]):
+                selected_threads = [threads_data["threads"][thread_index]]
+                print(f"Selected thread: {selected_threads[0]['title']}")
+            else:
+                print("Invalid choice. Using all threads...")
+                selected_threads = threads_data["threads"]
+        except ValueError:
+            print("Invalid input. Using all threads...")
+            selected_threads = threads_data["threads"]
 
-# --- ADDITIONAL INSTRUCTIONS STEP ---
-print("\nWould you like to add any specific instructions for the video script?")
-print("(e.g., 'Focus more on the environmental impact', 'Make it more personal', 'Add more technical details', etc.)")
-print("Press Enter to skip or type your instructions:")
-additional_instructions = input("Additional instructions: ").strip()
+    # --- ADDITIONAL INSTRUCTIONS STEP ---
+    print("\nWould you like to add any specific instructions for the video script?")
+    print("(e.g., 'Focus more on the environmental impact', 'Make it more personal', 'Add more technical details', etc.)")
+    print("Press Enter to skip or type your instructions:")
+    additional_instructions = input("Additional instructions: ").strip()
 
-# --- NEW STEP 2: Synthesize Content with Selected Threads ---
-print("\nStep 2: Synthesizing content from selected threads...")
+    # --- NEW STEP 2: Synthesize Content with Selected Threads ---
+    print("\nStep 2: Synthesizing content from selected threads...")
 
-# Build input object for synthesis with selected threads and additional instructions
-synthesis_input = {
-    "input": question,
-    "sources": sources,
-    "threads": selected_threads,
-    "thread_summary": threads_data["summary"],
-    "additional_instructions": additional_instructions if additional_instructions else ""
-}
+    # Build input object for synthesis with selected threads and additional instructions
+    synthesis_input = {
+        "input": question,
+        "sources": sources,
+        "threads": selected_threads,
+        "thread_summary": threads_data["summary"],
+        "additional_instructions": additional_instructions if additional_instructions else ""
+    }
 
 # Send inference request to synthesis function
 response = client.inference(

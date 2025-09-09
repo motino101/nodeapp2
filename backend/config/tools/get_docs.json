@@ -1,0 +1,15 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "google_doc_url": {
+            "type": "string",
+            "description": "The Google Docs URL or document ID to extract content from"
+        },
+        "api_key": {
+            "type": "string", 
+            "description": "Google API key for accessing the Google Docs API"
+        }
+    }
+}
+

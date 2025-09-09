@@ -24,8 +24,41 @@
         "required": ["type", "contents"],
         "additionalProperties": false
       }
+    },
+    "threads": {
+      "type": "array",
+      "description": "Thematic threads extracted from sources",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "key_ideas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supporting_quotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["title", "theme", "key_ideas", "supporting_quotes"],
+        "additionalProperties": false
+      }
+    },
+    "thread_summary": {
+      "type": "string",
+      "description": "Summary of how threads connect to the user's request"
     }
   },
-  "required": ["input", "sources"],
+  "required": ["input", "sources", "threads", "thread_summary"],
   "additionalProperties": false
 }

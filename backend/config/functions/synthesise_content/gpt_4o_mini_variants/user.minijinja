@@ -1,8 +1,21 @@
-Task: {{input}}
+User Request: {{ input }}
 
-Sources:
-{% for source in sources %}
-- {{source.contents}}
+Thematic Threads (focus on the strongest one):
+{% for thread in threads %}
+Thread {{ loop.index }}: {{ thread.title }}
+Theme: {{ thread.theme }}
+Key Ideas: {{ thread.key_ideas | join(', ') }}
+Supporting Quotes: {{ thread.supporting_quotes | join(' | ') }}
+
 {% endfor %}
 
-# Create a 1-minute video script based on the above sources
+Thread Summary: {{ thread_summary }}
+
+Original Sources (for additional context):
+{% for source in sources %}
+Source {{ loop.index }} ({{ source.type }}):
+{{ source.contents }}
+
+{% endfor %}
+
+Create a compelling 1-minute video script that focuses on the strongest thematic thread while incorporating relevant elements from other threads as supporting points.

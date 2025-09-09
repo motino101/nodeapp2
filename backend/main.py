@@ -30,13 +30,48 @@ sources = [
     for chunk in relevant_chunks
 ]
 
-# Build input object following your schema
-input_obj = {
+# --- NEW STEP 1: Thread Ideas ---
+print("Step 1: Threading ideas from sources...")
+threading_input = {
     "input": question,
     "sources": sources
 }
 
-# Send inference request
+threading_response = client.inference(
+    function_name="thread_ideas",
+    input={
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "arguments": threading_input
+                    }
+                ]
+            }
+        ]
+    },
+)
+
+print("Threading complete. Found threads:")
+threads_data = threading_response.output.parsed
+
+for i, thread in enumerate(threads_data["threads"], 1):
+    print(f"{i}. {thread['title']}: {thread['theme']}")
+
+# --- NEW STEP 2: Synthesize Content with Threaded Ideas ---
+print("\nStep 2: Synthesizing content from threaded ideas...")
+
+# Build input object for synthesis with threaded ideas
+synthesis_input = {
+    "input": question,
+    "sources": sources,
+    "threads": threads_data["threads"],
+    "thread_summary": threads_data["summary"]
+}
+
+# Send inference request to synthesis function
 response = client.inference(
     function_name="synthesise_content",
     input={
@@ -46,7 +81,7 @@ response = client.inference(
                 "content": [
                     {
                         "type": "text",
-                        "arguments": input_obj
+                        "arguments": synthesis_input
                     }
                 ]
             }
@@ -54,7 +89,7 @@ response = client.inference(
     },
 )
 
-
+print("\nFinal synthesis complete!")
 print(response)
 
 

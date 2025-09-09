@@ -11,8 +11,9 @@
 # -------------------------- FUNCTION: SYNTHESISE CONTENT
 # Function
 [functions.synthesise_content]
-type = "chat"
+type = "json"
 user_schema = "functions/synthesise_content/user_schema.json"
+output_schema = "functions/synthesise_content/output_schema.json"
 
 # Variant 1
 [functions.synthesise_content.variants.gpt_4o_mini]
@@ -21,7 +22,7 @@ type = "chat_completion"
 model = "openai::gpt-4o-mini"
 system_template = "functions/synthesise_content/gpt_4o_mini_variants/system.minijinja"
 user_template = "functions/synthesise_content/gpt_4o_mini_variants/user.minijinja"
-
+json_mode = "strict"
 
 # Variant 2
 [functions.synthesise_content.variants.haiku_variant]
@@ -31,6 +32,7 @@ model = "my_haiku_3"
 system_template = "functions/synthesise_content/haiku_variant/system.minijinja"
 user_template   = "functions/synthesise_content/haiku_variant/user.minijinja"
 temperature     = 0.9
+json_mode = "strict"
 
 # -------------------------- MODELS
 [models.my_haiku_3]

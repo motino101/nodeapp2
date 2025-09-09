@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Social Media Reel Content",
+    "type": "object",
+    "required": ["title", "viewer", "script", "shotlist"],
+    "additionalProperties": false,
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "Clear, catchy title for the reel",
+        "minLength": 5,
+        "maxLength": 90
+      },
+      "viewer": {
+        "type": "string",
+        "description": "Simple description of the target viewer",
+        "minLength": 3,
+        "maxLength": 120
+      },
+      "script": {
+        "type": "object",
+        "required": ["hook", "context_curiosity_gaps", "takeaway", "ending"],
+        "additionalProperties": false,
+        "properties": {
+          "hook": {
+            "type": "string",
+            "description": "0–3s opener; visually punchy and curiosity-driven",
+            "minLength": 8,
+            "maxLength": 180
+          },
+          "context_curiosity_gaps": {
+            "type": "array",
+            "description": "1–3 conversational segments (each 1–3 sentences)",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 480
+            }
+          },
+          "takeaway": {
+            "type": "string",
+            "description": "40–50s concise, memorable sentence",
+            "minLength": 8,
+            "maxLength": 200
+          },
+          "ending": {
+            "type": "string",
+            "description": "50–60s thought-provoking question tying back to the hook",
+            "minLength": 8,
+            "maxLength": 200
+          }
+        }
+      },
+      "shotlist": {
+        "type": "array",
+        "description": "Mix of talking head and varied shots",
+        "minItems": 4,
+        "maxItems": 8,
+        "items": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 140
+        }
+      }
+    }
+  }
+  

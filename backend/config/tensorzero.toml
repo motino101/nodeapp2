@@ -6,6 +6,7 @@ output_schema = "functions/thread_ideas/output_schema.json"
 
 [functions.thread_ideas.variants.gpt_4o_mini]
 type = "chat_completion"
+weight = 0.1
 model = "openai::gpt-4o-mini"
 system_template = "functions/thread_ideas/claude_variant/system.minijinja"
 user_template = "functions/thread_ideas/claude_variant/user.minijinja"
@@ -13,6 +14,7 @@ json_mode = "strict"
 
 [functions.thread_ideas.variants.claude_sonnet]
 type = "chat_completion"
+weight = 0.9
 model = "my_claude_sonnet"
 system_template = "functions/thread_ideas/claude_variant/system.minijinja"
 user_template = "functions/thread_ideas/claude_variant/user.minijinja"
@@ -27,7 +29,7 @@ output_schema = "functions/synthesise_content/output_schema.json"
 
 # Variant 1
 [functions.synthesise_content.variants.gpt_4o_mini]
-weight = 0.7
+weight = 0.1
 type = "chat_completion"
 model = "openai::gpt-4o-mini"
 system_template = "functions/synthesise_content/gpt_4o_mini_variants/system.minijinja"
@@ -37,7 +39,7 @@ json_mode = "strict"
 # Variant 2
 [functions.synthesise_content.variants.haiku_variant]
 type = "chat_completion"
-weight = 0.3
+weight = 0.9
 model = "my_haiku_3"
 system_template = "functions/synthesise_content/haiku_variant/system.minijinja"
 user_template   = "functions/synthesise_content/haiku_variant/user.minijinja"

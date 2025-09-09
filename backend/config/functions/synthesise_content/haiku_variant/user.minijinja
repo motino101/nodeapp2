@@ -1,1 +1,9 @@
-{{user_text}}
+Task: {{input}}
+
+Sources:
+{% for source in sources %}
+- {{source.contents}}
+{% endfor %}
+
+# Create a 1-minute video script based on the above sources
+

@@ -18,37 +18,41 @@ with TensorZeroGateway.build_embedded(
     config_file="config/tensorzero.toml",
 ) as client:
 
-    # run first function - reformulate question into search query
-    query_resp = client.inference(
-        function_name="generate_research_query",
-        input={
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Question: {question}",
-                }
-            ]
-        }
-    )
-    print(query_resp)
-    search_query = query_resp
-    episode_id = query_resp.episode_id
+    relevant_chunks = get_relevant_chunks(question, all_chunks)
 
-    # run second function - synthesise content
-    relevant_chunks = get_relevant_chunks(search_query, all_chunks)
+# Build sources according to schema
+sources = [
+    {
+        "type": "text",
+        "contents": chunk
+    }
+    for chunk in relevant_chunks
+]
 
-    response = client.inference(
-        function_name="synthesise_content",
-        episode_id=episode_id, # use episode id to link the two inferences
-        input={
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Question: {question}\nSources: {relevant_chunks}",
-                }
-            ]
-        },
-    )
+# Build input object following your schema
+input_obj = {
+    "input": question,
+    "sources": sources
+}
+
+# Send inference request
+response = client.inference(
+    function_name="synthesise_content",
+    input={
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "arguments": input_obj
+                    }
+                ]
+            }
+        ]
+    },
+)
+
 
 print(response)
 
@@ -63,7 +67,7 @@ if feedback.isdigit() and 1 <= int(feedback) <= 5:
     with TensorZeroGateway.build_http(gateway_url="http://localhost:3000") as feedback_client:
         feedback_result = feedback_client.feedback(
             metric_name="user_rating",
-            episode_id=episode_id,
+            episode_id=response.episode_id,
             value=float(rating),
         )
         print("Feedback recorded:", feedback_result)

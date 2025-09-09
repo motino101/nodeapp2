@@ -11,6 +11,13 @@ system_template = "functions/thread_ideas/claude_variant/system.minijinja"
 user_template = "functions/thread_ideas/claude_variant/user.minijinja"
 json_mode = "strict"
 
+[functions.thread_ideas.variants.claude_sonnet]
+type = "chat_completion"
+model = "my_claude_sonnet"
+system_template = "functions/thread_ideas/claude_variant/system.minijinja"
+user_template = "functions/thread_ideas/claude_variant/user.minijinja"
+json_mode = "strict"
+
 # -------------------------- FUNCTION: SYNTHESISE CONTENT
 # Function
 [functions.synthesise_content]
@@ -44,6 +51,13 @@ routing = ["my_anthropic_provider"]
 [models.my_haiku_3.providers.my_anthropic_provider]
 type = "anthropic"
 model_name = "claude-3-haiku-20240307"
+
+[models.my_claude_sonnet]
+routing = ["my_anthropic_provider"]
+
+[models.my_claude_sonnet.providers.my_anthropic_provider]
+type = "anthropic"
+model_name = "claude-3-5-sonnet-20241022"
 
 
 # -------------------------- METRICS

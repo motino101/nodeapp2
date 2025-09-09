@@ -12,31 +12,20 @@
         "maxItems": 5,
         "items": {
           "type": "object",
-          "required": ["title", "theme", "key_ideas", "supporting_quotes"],
+          "required": ["title", "insight", "supporting_quotes"],
           "additionalProperties": false,
           "properties": {
             "title": {
               "type": "string",
-              "description": "Clear, compelling title for this thread",
-              "minLength": 5,
-              "maxLength": 60
-            },
-            "theme": {
-              "type": "string",
-              "description": "The core philosophical or conceptual theme",
+              "description": "Very specific, one-sentence title that captures the exact insight",
               "minLength": 10,
-              "maxLength": 100
+              "maxLength": 80
             },
-            "key_ideas": {
-              "type": "array",
-              "description": "2-4 key ideas that support this thread",
-              "minItems": 2,
-              "maxItems": 4,
-              "items": {
-                "type": "string",
-                "minLength": 15,
-                "maxLength": 200
-              }
+            "insight": {
+              "type": "string",
+              "description": "A detailed paragraph describing the specific insight and its implications",
+              "minLength": 100,
+              "maxLength": 400
             },
             "supporting_quotes": {
               "type": "array",

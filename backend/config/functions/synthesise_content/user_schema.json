@@ -34,14 +34,8 @@
           "title": {
             "type": "string"
           },
-          "theme": {
+          "insight": {
             "type": "string"
-          },
-          "key_ideas": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "supporting_quotes": {
             "type": "array",
@@ -50,15 +44,19 @@
             }
           }
         },
-        "required": ["title", "theme", "key_ideas", "supporting_quotes"],
+        "required": ["title", "insight", "supporting_quotes"],
         "additionalProperties": false
       }
     },
     "thread_summary": {
       "type": "string",
       "description": "Summary of how threads connect to the user's request"
+    },
+    "additional_instructions": {
+      "type": "string",
+      "description": "Additional specific instructions from the user for customizing the output"
     }
   },
-  "required": ["input", "sources", "threads", "thread_summary"],
+  "required": ["input", "sources", "threads", "thread_summary", "additional_instructions"],
   "additionalProperties": false
 }

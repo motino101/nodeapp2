@@ -58,8 +58,8 @@ print("Threading complete. Found threads:")
 threads_data = threading_response.output.parsed
 
 for i, thread in enumerate(threads_data["threads"], 1):
-    print(f"{i}. {thread['title']}: {thread['theme']}")
-    print(f"   Key ideas: {', '.join(thread['key_ideas'])}")
+    print(f"{i}. {thread['title']}")
+    print(f"   {thread['insight']}")
     print()
 
 # --- USER SELECTION STEP ---
@@ -84,15 +84,22 @@ else:
         print("Invalid input. Using all threads...")
         selected_threads = threads_data["threads"]
 
+# --- ADDITIONAL INSTRUCTIONS STEP ---
+print("\nWould you like to add any specific instructions for the video script?")
+print("(e.g., 'Focus more on the environmental impact', 'Make it more personal', 'Add more technical details', etc.)")
+print("Press Enter to skip or type your instructions:")
+additional_instructions = input("Additional instructions: ").strip()
+
 # --- NEW STEP 2: Synthesize Content with Selected Threads ---
 print("\nStep 2: Synthesizing content from selected threads...")
 
-# Build input object for synthesis with selected threads
+# Build input object for synthesis with selected threads and additional instructions
 synthesis_input = {
     "input": question,
     "sources": sources,
     "threads": selected_threads,
-    "thread_summary": threads_data["summary"]
+    "thread_summary": threads_data["summary"],
+    "additional_instructions": additional_instructions if additional_instructions else ""
 }
 
 # Send inference request to synthesis function

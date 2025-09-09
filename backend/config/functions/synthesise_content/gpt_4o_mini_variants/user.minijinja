@@ -3,13 +3,16 @@ User Request: {{ input }}
 Thematic Threads (focus on the strongest one):
 {% for thread in threads %}
 Thread {{ loop.index }}: {{ thread.title }}
-Theme: {{ thread.theme }}
-Key Ideas: {{ thread.key_ideas | join(', ') }}
+Insight: {{ thread.insight }}
 Supporting Quotes: {{ thread.supporting_quotes | join(' | ') }}
 
 {% endfor %}
 
 Thread Summary: {{ thread_summary }}
+
+{% if additional_instructions %}
+Additional Instructions: {{ additional_instructions }}
+{% endif %}
 
 Original Sources (for additional context):
 {% for source in sources %}
@@ -18,4 +21,4 @@ Source {{ loop.index }} ({{ source.type }}):
 
 {% endfor %}
 
-Create a compelling 1-minute video script that focuses on the strongest thematic thread while incorporating relevant elements from other threads as supporting points.
+Create a compelling 1-minute video script that focuses on the strongest thematic thread while incorporating relevant elements from other threads as supporting points.{% if additional_instructions %} Pay special attention to the additional instructions provided above.{% endif %}

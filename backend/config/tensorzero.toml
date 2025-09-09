@@ -1,12 +1,15 @@
-# -------------------------- FUNCTION: GENERATE RESEARCH QUERY
-#[functions.generate_research_query]
-#type = "chat"
+# -------------------------- FUNCTION: THREAD IDEAS
+[functions.thread_ideas]
+type = "json"
+user_schema = "functions/thread_ideas/user_schema.json"
+output_schema = "functions/thread_ideas/output_schema.json"
 
-#[functions.generate_research_query.variants.gpt_4o_mini]
-#type = "chat_completion"
-#model = "openai::gpt-4o-mini"
-#system_template = "functions/generate_research_query/simple_variant/system.minijinja"
-#user_template = "functions/generate_research_query/simple_variant/user.minijinja"
+[functions.thread_ideas.variants.gpt_4o_mini]
+type = "chat_completion"
+model = "openai::gpt-4o-mini"
+system_template = "functions/thread_ideas/claude_variant/system.minijinja"
+user_template = "functions/thread_ideas/claude_variant/user.minijinja"
+json_mode = "strict"
 
 # -------------------------- FUNCTION: SYNTHESISE CONTENT
 # Function

@@ -1,0 +1,62 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Idea Threads",
+    "type": "object",
+    "required": ["threads", "summary"],
+    "additionalProperties": false,
+    "properties": {
+      "threads": {
+        "type": "array",
+        "description": "3-5 focused thematic threads extracted from the sources",
+        "minItems": 3,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "required": ["title", "theme", "key_ideas", "supporting_quotes"],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Clear, compelling title for this thread",
+              "minLength": 5,
+              "maxLength": 60
+            },
+            "theme": {
+              "type": "string",
+              "description": "The core philosophical or conceptual theme",
+              "minLength": 10,
+              "maxLength": 100
+            },
+            "key_ideas": {
+              "type": "array",
+              "description": "2-4 key ideas that support this thread",
+              "minItems": 2,
+              "maxItems": 4,
+              "items": {
+                "type": "string",
+                "minLength": 15,
+                "maxLength": 200
+              }
+            },
+            "supporting_quotes": {
+              "type": "array",
+              "description": "Direct quotes from sources that support this thread",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 300
+              }
+            }
+          }
+        }
+      },
+      "summary": {
+        "type": "string",
+        "description": "Brief overview of how these threads connect to the user's request",
+        "minLength": 50,
+        "maxLength": 300
+      }
+    }
+  }

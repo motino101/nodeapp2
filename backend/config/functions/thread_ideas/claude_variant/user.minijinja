@@ -1,0 +1,10 @@
+User Request: {{ input }}
+
+Sources to analyze:
+{% for source in sources %}
+Source {{ loop.index }} ({{ source.type }}):
+{{ source.contents }}
+
+{% endfor %}
+
+Please analyze these sources and extract 3-5 focused thematic threads that best serve the user's request. Each thread should be a distinct pathway that could be developed into compelling content.

@@ -59,15 +59,39 @@ threads_data = threading_response.output.parsed
 
 for i, thread in enumerate(threads_data["threads"], 1):
     print(f"{i}. {thread['title']}: {thread['theme']}")
+    print(f"   Key ideas: {', '.join(thread['key_ideas'])}")
+    print()
 
-# --- NEW STEP 2: Synthesize Content with Threaded Ideas ---
-print("\nStep 2: Synthesizing content from threaded ideas...")
+# --- USER SELECTION STEP ---
+print("Which thread would you like to focus on for the video script?")
+print("Enter the number (1-{}) or 'all' to use all threads:".format(len(threads_data["threads"])))
+choice = input("Your choice: ").strip()
 
-# Build input object for synthesis with threaded ideas
+selected_threads = []
+if choice.lower() == 'all':
+    selected_threads = threads_data["threads"]
+    print("Using all threads for synthesis...")
+else:
+    try:
+        thread_index = int(choice) - 1
+        if 0 <= thread_index < len(threads_data["threads"]):
+            selected_threads = [threads_data["threads"][thread_index]]
+            print(f"Selected thread: {selected_threads[0]['title']}")
+        else:
+            print("Invalid choice. Using all threads...")
+            selected_threads = threads_data["threads"]
+    except ValueError:
+        print("Invalid input. Using all threads...")
+        selected_threads = threads_data["threads"]
+
+# --- NEW STEP 2: Synthesize Content with Selected Threads ---
+print("\nStep 2: Synthesizing content from selected threads...")
+
+# Build input object for synthesis with selected threads
 synthesis_input = {
     "input": question,
     "sources": sources,
-    "threads": threads_data["threads"],
+    "threads": selected_threads,
     "thread_summary": threads_data["summary"]
 }
 

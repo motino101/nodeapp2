@@ -2,12 +2,13 @@ from tensorzero import TensorZeroGateway, ToolCall
 from retriever import build_chunks, get_relevant_chunks
 import json
 
-# --- Step 1: User provides a question ---
-question = "Synthesise my sources into a 1-minute video script about farming and climate change."
+# --- Step 1: Load question from input.json ---
+with open("sources/input.json", "r", encoding="utf-8") as f:
+    input_data = json.load(f)
+    question = input_data["content"]
 
 # --- Step 2: Build source chunks ---
 all_chunks = build_chunks()
-
 
 with open("sample.json", "r", encoding="utf-8") as f:
     data = json.load(f)

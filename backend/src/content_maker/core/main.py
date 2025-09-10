@@ -3,6 +3,7 @@ from .retriever import build_chunks, get_relevant_chunks
 from ..processors.source_detector import SmartSourceDetector
 import json
 import os
+import time
 
 def main():
     """Main function for Content Maker"""
@@ -148,6 +149,7 @@ def main():
                 }
             ]
         },
+        episode_id=threading_response.episode_id,
     )
 
     print("\nFinal synthesis complete!")
@@ -163,7 +165,7 @@ def main():
         with TensorZeroGateway.build_http(gateway_url="http://localhost:3000") as feedback_client:
             feedback_result = feedback_client.feedback(
                 metric_name="user_rating",
-                episode_id=response.episode_id,
+                episode_id=threading_response.episode_id,
                 value=float(rating),
             )
             print("Feedback recorded:", feedback_result)

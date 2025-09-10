@@ -254,13 +254,24 @@ class SmartSourceDetector:
                             "source_title": scraped_result['title']
                         })
                     else:
-                        # Add placeholder for failed scraping
-                        processed_sources.append({
-                            "type": "text",
-                            "contents": f"[Webpage scraping failed: {url}]",
-                            "source_url": url,
-                            "source_title": "Scraping Failed"
-                        })
+                        # Add placeholder for failed scraping with helpful context
+                        error_status = scraped_result.get('status', 'error')
+                        error_message = scraped_result.get('error', 'Unknown error')
+                        
+                        if error_status == 'timeout':
+                            processed_sources.append({
+                                "type": "text",
+                                "contents": f"[Webpage scraping failed due to timeout: {url}]\n\nThis appears to be a paywalled or protected content source. The Financial Times and similar news sites often block automated scrapers.\n\nConsider:\n1. Manually copying the relevant content from the article\n2. Using alternative sources for the same information\n3. Checking if the content is available on a different platform\n\nOriginal URL: {url}",
+                                "source_url": url,
+                                "source_title": "Scraping Failed - Timeout"
+                            })
+                        else:
+                            processed_sources.append({
+                                "type": "text",
+                                "contents": f"[Webpage scraping failed: {url}]\n\nError: {error_message}\n\nThis URL could not be automatically scraped. Consider manually extracting the relevant content or finding alternative sources.",
+                                "source_url": url,
+                                "source_title": "Scraping Failed"
+                            })
             
             # Also keep the original source content if it has other text
             if source_info['content'] and not all(url in source_info['content'] for url in webpage_urls):
@@ -288,13 +299,24 @@ class SmartSourceDetector:
                             "source_title": scraped_result['title']
                         })
                     else:
-                        # Add placeholder for failed scraping
-                        processed_sources.append({
-                            "type": "text",
-                            "contents": f"[Webpage scraping failed: {url}]",
-                            "source_url": url,
-                            "source_title": "Scraping Failed"
-                        })
+                        # Add placeholder for failed scraping with helpful context
+                        error_status = scraped_result.get('status', 'error')
+                        error_message = scraped_result.get('error', 'Unknown error')
+                        
+                        if error_status == 'timeout':
+                            processed_sources.append({
+                                "type": "text",
+                                "contents": f"[Webpage scraping failed due to timeout: {url}]\n\nThis appears to be a paywalled or protected content source. The Financial Times and similar news sites often block automated scrapers.\n\nConsider:\n1. Manually copying the relevant content from the article\n2. Using alternative sources for the same information\n3. Checking if the content is available on a different platform\n\nOriginal URL: {url}",
+                                "source_url": url,
+                                "source_title": "Scraping Failed - Timeout"
+                            })
+                        else:
+                            processed_sources.append({
+                                "type": "text",
+                                "contents": f"[Webpage scraping failed: {url}]\n\nError: {error_message}\n\nThis URL could not be automatically scraped. Consider manually extracting the relevant content or finding alternative sources.",
+                                "source_url": url,
+                                "source_title": "Scraping Failed"
+                            })
             
             # Always add the original text content
             processed_sources.append({

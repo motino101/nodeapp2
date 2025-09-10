@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class WebScraper:
-    def __init__(self, timeout=10, max_retries=3, delay=1):
+    def __init__(self, timeout=15, max_retries=2, delay=1):
         """
         Initialize web scraper with configuration
         
@@ -33,12 +33,30 @@ class WebScraper:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
+        
+        # Known problematic domains that frequently timeout or block scrapers
+        self.problematic_domains = {
+            'ft.com', 'financialtimes.com', 'wsj.com', 'nytimes.com', 
+            'washingtonpost.com', 'bloomberg.com', 'reuters.com'
+        }
     
     def is_valid_url(self, url):
         """Check if URL is valid and accessible"""
         try:
             parsed = urlparse(url)
             return bool(parsed.netloc) and parsed.scheme in ['http', 'https']
+        except:
+            return False
+    
+    def is_problematic_domain(self, url):
+        """Check if URL is from a known problematic domain"""
+        try:
+            parsed = urlparse(url)
+            domain = parsed.netloc.lower()
+            # Remove 'www.' prefix for comparison
+            if domain.startswith('www.'):
+                domain = domain[4:]
+            return domain in self.problematic_domains
         except:
             return False
     
@@ -69,6 +87,11 @@ class WebScraper:
             dict: Scraped content with metadata
         """
         print(f"🌐 Scraping webpage: {url}")
+        
+        # Check if this is a problematic domain
+        if self.is_problematic_domain(url):
+            print(f"⚠️  Warning: {url} is from a known problematic domain that may timeout or block scrapers")
+            print(f"💡 Consider manually extracting content or using alternative sources")
         
         for attempt in range(self.max_retries):
             try:
@@ -101,6 +124,30 @@ class WebScraper:
                     'status': 'success'
                 }
                 
+            except requests.exceptions.ConnectTimeout as e:
+                print(f"⏰ Connection timeout (attempt {attempt + 1}): {e}")
+                if self.is_problematic_domain(url):
+                    print(f"🚫 This domain is known to frequently timeout. Skipping further attempts.")
+                    return {
+                        'url': url,
+                        'title': 'Connection Timeout',
+                        'description': f'Connection to {urlparse(url).netloc} timed out. This domain is known to frequently block or timeout scrapers.',
+                        'content': f'[Webpage scraping failed due to timeout: {url}]\n\nThis appears to be a paywalled or protected content source. Consider:\n1. Manually copying the relevant content\n2. Using alternative sources\n3. Checking if the content is available elsewhere',
+                        'status': 'timeout',
+                        'error': str(e)
+                    }
+                elif attempt < self.max_retries - 1:
+                    time.sleep(self.delay * (attempt + 1))  # Exponential backoff
+                else:
+                    return {
+                        'url': url,
+                        'title': 'Connection Timeout',
+                        'description': f'Connection to {urlparse(url).netloc} timed out after {self.max_retries} attempts',
+                        'content': f'[Webpage scraping failed due to timeout: {url}]',
+                        'status': 'timeout',
+                        'error': str(e)
+                    }
+                
             except requests.exceptions.RequestException as e:
                 print(f"❌ Request error (attempt {attempt + 1}): {e}")
                 if attempt < self.max_retries - 1:
@@ -110,7 +157,7 @@ class WebScraper:
                         'url': url,
                         'title': 'Scraping Failed',
                         'description': f'Failed to scrape: {str(e)}',
-                        'content': f'[Webpage scraping failed: {url}]',
+                        'content': f'[Webpage scraping failed: {url}]\n\nError: {str(e)}',
                         'status': 'error',
                         'error': str(e)
                     }
@@ -124,7 +171,7 @@ class WebScraper:
                         'url': url,
                         'title': 'Scraping Failed',
                         'description': f'Unexpected error: {str(e)}',
-                        'content': f'[Webpage scraping failed: {url}]',
+                        'content': f'[Webpage scraping failed: {url}]\n\nUnexpected error: {str(e)}',
                         'status': 'error',
                         'error': str(e)
                     }

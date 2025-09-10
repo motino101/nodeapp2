@@ -4,8 +4,10 @@ Test script for web scraping RAG functionality
 """
 
 import os
-from smart_source_detector import SmartSourceDetector
-from web_scraper import WebScraper
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+from content_maker.processors.source_detector import SmartSourceDetector
+from content_maker.processors.web_scraper import WebScraper
 
 def test_web_scraper():
     """Test the web scraper directly"""

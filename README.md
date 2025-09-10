@@ -85,7 +85,12 @@ Generated video script:
 
 ```
 backend/
-├── main.py                    # Run this
+├── main.py                    # Entry point - run this
+├── src/content_maker/         # Main package
+│   ├── core/                  # Core functionality
+│   ├── processors/            # Source processing modules
+│   └── utils/                 # Utilities
+├── tests/                     # Test suite
 ├── sources/                   # Add your files here
 ├── config/tensorzero.toml     # Model config
 └── tensorzero_storage/        # Auto-created

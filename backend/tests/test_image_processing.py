@@ -4,7 +4,9 @@ Test script for multimodal image processing
 """
 
 import os
-from multimodal_image_processor import MultimodalImageProcessor
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+from content_maker.processors.image_processor import MultimodalImageProcessor
 
 def test_multimodal_image_processing():
     """Test multimodal image processing with the existing image"""
@@ -36,7 +38,7 @@ def test_smart_detection_with_multimodal():
     print("\n🧪 Testing Smart Source Detection with Multimodal Images")
     print("=" * 50)
     
-    from smart_source_detector import SmartSourceDetector
+    from content_maker.processors.source_detector import SmartSourceDetector
     
     detector = SmartSourceDetector()
     

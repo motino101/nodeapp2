@@ -10,8 +10,8 @@ import os
 import mimetypes
 from pathlib import Path
 from tensorzero import TensorZeroGateway
-from web_scraper import WebScraper
-from multimodal_image_processor import MultimodalImageProcessor
+from .web_scraper import WebScraper
+from .image_processor import MultimodalImageProcessor
 
 class SmartSourceDetector:
     def __init__(self, api_key=None):

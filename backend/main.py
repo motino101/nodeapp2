@@ -24,7 +24,7 @@ with TensorZeroGateway.build_embedded(
     relevant_chunks = get_relevant_chunks(question, all_chunks)
 
 # --- SMART SOURCE DETECTION AND PROCESSING ---
-print("🔍 Smart source detection and processing...")
+# Smart source detection and processing
 detector = SmartSourceDetector()
 all_sources = detector.process_sources_directory("sources")
 
@@ -49,7 +49,7 @@ for source in sources:
     }
     cleaned_sources.append(cleaned_source)
 
-print(f"📊 Total sources for processing: {len(cleaned_sources)}")
+print(f"Processing {len(cleaned_sources)} sources...")
 
 # --- NEW STEP 1: Thread Ideas ---
 print("Step 1: Threading ideas from sources...")

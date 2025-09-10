@@ -195,7 +195,7 @@ class SmartSourceDetector:
         processed_sources = []
         
         if source_type == 'google_docs':
-            print(f"🔗 Processing Google Docs source: {source_info['metadata']['filename']}")
+            # Processing Google Docs source
             urls = source_info['metadata']['google_docs_urls']
             
             for url in urls:
@@ -211,7 +211,7 @@ class SmartSourceDetector:
                 })
         
         elif source_type == 'image':
-            print(f"🖼️  Processing image source: {source_info['metadata']['filename']}")
+            # Processing image source
             # For now, just add a description of the image
             processed_sources.append({
                 "type": "text",
@@ -219,7 +219,7 @@ class SmartSourceDetector:
             })
         
         elif source_type == 'webpage':
-            print(f"🌐 Processing webpage source: {source_info['metadata']['filename']}")
+            # Processing webpage source
             # For now, just add the content as text
             processed_sources.append({
                 "type": "text",
@@ -227,14 +227,14 @@ class SmartSourceDetector:
             })
         
         elif source_type == 'text':
-            print(f"📝 Processing text source: {source_info['metadata']['filename']}")
+            # Processing text source
             processed_sources.append({
                 "type": "text",
                 "contents": source_info['content']
             })
         
         else:
-            print(f"❓ Processing unknown source: {source_info['metadata']['filename']}")
+            # Processing unknown source
             processed_sources.append({
                 "type": "text",
                 "contents": source_info['content']
@@ -244,7 +244,7 @@ class SmartSourceDetector:
     
     def _extract_google_doc_content(self, google_doc_url):
         """Extract content from a publicly accessible Google Doc"""
-        print(f"📄 Extracting content from: {google_doc_url}")
+        # Extracting content from Google Doc
         
         try:
             # Extract document ID from URL
@@ -273,7 +273,7 @@ class SmartSourceDetector:
                         
                         if 'text/plain' in content_type:
                             content = response.text
-                            print(f"✅ Successfully extracted text content ({len(content)} characters)")
+                            # Successfully extracted text content
                             return {
                                 "type": "text",
                                 "contents": content,
@@ -297,7 +297,7 @@ class SmartSourceDetector:
                             chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
                             content = '\n'.join(chunk for chunk in chunks if chunk)
                             
-                            print(f"✅ Successfully extracted HTML content ({len(content)} characters)")
+                            # Successfully extracted HTML content
                             return {
                                 "type": "text",
                                 "contents": content,
@@ -390,21 +390,14 @@ class SmartSourceDetector:
         
         all_processed_sources = []
         
-        print(f"🔍 Scanning sources directory: {sources_dir}")
-        
         for file_path in sources_path.iterdir():
             if file_path.is_file():
-                print(f"📁 Detecting source type: {file_path.name}")
-                
                 # Detect source type
                 source_info = self.detect_source_type(file_path)
-                print(f"   → Detected as: {source_info['type']}")
                 
                 # Process the source
                 processed_sources = self.process_source(source_info)
                 all_processed_sources.extend(processed_sources)
-        
-        print(f"✅ Processed {len(all_processed_sources)} sources total")
         return all_processed_sources
 
 # Example usage and testing
@@ -429,6 +422,6 @@ if __name__ == "__main__":
             print(f"   Processed sources: {len(processed)}")
     
     # Test with entire directory
-    print(f"\n🔍 Processing entire sources directory...")
+    # Processing entire sources directory
     all_sources = detector.process_sources_directory()
-    print(f"📊 Total processed sources: {len(all_sources)}")
+    print(f"Total processed sources: {len(all_sources)}")

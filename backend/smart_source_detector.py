@@ -11,11 +11,13 @@ import mimetypes
 from pathlib import Path
 from tensorzero import TensorZeroGateway
 from web_scraper import WebScraper
+from multimodal_image_processor import MultimodalImageProcessor
 
 class SmartSourceDetector:
     def __init__(self, api_key=None):
         self.api_key = api_key or os.getenv('GOOGLE_API_KEY')
         self.web_scraper = WebScraper()
+        self.image_processor = MultimodalImageProcessor()
         
     def detect_source_type(self, source_path):
         """
@@ -214,11 +216,24 @@ class SmartSourceDetector:
         
         elif source_type == 'image':
             print(f"🖼️  Processing image source: {source_info['metadata']['filename']}")
-            # For now, just add a description of the image
-            processed_sources.append({
-                "type": "text",
-                "contents": f"Image reference: {source_info['content']}"
-            })
+            
+            # Use multimodal AI to analyze the image
+            image_path = source_info['path']
+            analysis_result = self.image_processor.process_image(image_path)
+            
+            if analysis_result['status'] == 'success':
+                processed_sources.append({
+                    "type": "text",
+                    "contents": analysis_result['content'],
+                    "source_url": f"file://{image_path}",
+                    "source_title": f"Image Analysis: {analysis_result['filename']}"
+                })
+            else:
+                # Fallback to basic reference if analysis fails
+                processed_sources.append({
+                    "type": "text",
+                    "contents": f"Image reference: {source_info['content']} (Analysis failed: {analysis_result.get('error', 'Unknown error')})"
+                })
         
         elif source_type == 'webpage':
             print(f"🌐 Processing webpage source: {source_info['metadata']['filename']}")

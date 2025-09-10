@@ -33,7 +33,7 @@ class MultimodalImageProcessor:
                 "content": f"[Image not found: {image_path}]"
             }
         
-        # Processing image with multimodal AI
+        print(f"🖼️  Processing image with multimodal AI: {image_path.name}")
         
         try:
             # Get MIME type
@@ -45,7 +45,8 @@ class MultimodalImageProcessor:
             with open(image_path, 'rb') as f:
                 image_data = base64.b64encode(f.read()).decode('utf-8')
             
-            # Image processed for multimodal analysis
+            print(f"📊 Image size: {len(image_data)} characters (base64)")
+            print(f"📋 MIME type: {mime_type}")
             
             # Use TensorZero Gateway for multimodal inference
             # Use embedded client directly as it has proper object storage configuration
@@ -123,7 +124,7 @@ class MultimodalImageProcessor:
                 "content": f"[Image not found: {image_path}]"
             }
         
-        # Processing image with context
+        print(f"🖼️  Processing image with context: {image_path.name}")
         
         try:
             # Get MIME type

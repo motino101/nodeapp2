@@ -1,3 +1,8 @@
+# -------------------------- OBJECT STORAGE
+[object_storage]
+type = "filesystem"
+path = "./tensorzero_storage"
+
 # -------------------------- TOOLS
 [tools.extract_google_doc_content]
 description = "Extract text content from a Google Doc using the Google Docs API"

@@ -10,10 +10,14 @@ import os
 import mimetypes
 from pathlib import Path
 from tensorzero import TensorZeroGateway
+from web_scraper import WebScraper
+from multimodal_image_processor import MultimodalImageProcessor
 
 class SmartSourceDetector:
     def __init__(self, api_key=None):
         self.api_key = api_key or os.getenv('GOOGLE_API_KEY')
+        self.web_scraper = WebScraper()
+        self.image_processor = MultimodalImageProcessor()
         
     def detect_source_type(self, source_path):
         """
@@ -212,22 +216,87 @@ class SmartSourceDetector:
         
         elif source_type == 'image':
             print(f"🖼️  Processing image source: {source_info['metadata']['filename']}")
-            # For now, just add a description of the image
-            processed_sources.append({
-                "type": "text",
-                "contents": f"Image reference: {source_info['content']}"
-            })
+            
+            # Use multimodal AI to analyze the image
+            image_path = source_info['path']
+            analysis_result = self.image_processor.process_image(image_path)
+            
+            if analysis_result['status'] == 'success':
+                processed_sources.append({
+                    "type": "text",
+                    "contents": analysis_result['content'],
+                    "source_url": f"file://{image_path}",
+                    "source_title": f"Image Analysis: {analysis_result['filename']}"
+                })
+            else:
+                # Fallback to basic reference if analysis fails
+                processed_sources.append({
+                    "type": "text",
+                    "contents": f"Image reference: {source_info['content']} (Analysis failed: {analysis_result.get('error', 'Unknown error')})"
+                })
         
         elif source_type == 'webpage':
             print(f"🌐 Processing webpage source: {source_info['metadata']['filename']}")
-            # For now, just add the content as text
-            processed_sources.append({
-                "type": "text",
-                "contents": source_info['content']
-            })
+            
+            # Extract and scrape webpage URLs
+            webpage_urls = source_info['metadata'].get('webpage_urls', [])
+            if webpage_urls:
+                print(f"🔍 Found {len(webpage_urls)} webpage URL(s) to scrape")
+                
+                for url in webpage_urls:
+                    scraped_result = self.web_scraper.scrape_webpage(url)
+                    
+                    if scraped_result['status'] == 'success':
+                        processed_sources.append({
+                            "type": "text",
+                            "contents": f"Title: {scraped_result['title']}\n\n{scraped_result['content']}",
+                            "source_url": url,
+                            "source_title": scraped_result['title']
+                        })
+                    else:
+                        # Add placeholder for failed scraping
+                        processed_sources.append({
+                            "type": "text",
+                            "contents": f"[Webpage scraping failed: {url}]",
+                            "source_url": url,
+                            "source_title": "Scraping Failed"
+                        })
+            
+            # Also keep the original source content if it has other text
+            if source_info['content'] and not all(url in source_info['content'] for url in webpage_urls):
+                processed_sources.append({
+                    "type": "text",
+                    "contents": source_info['content']
+                })
         
         elif source_type == 'text':
             print(f"📝 Processing text source: {source_info['metadata']['filename']}")
+            
+            # Check if text contains webpage URLs
+            webpage_urls = self.web_scraper.extract_webpage_urls(source_info['content'])
+            if webpage_urls:
+                print(f"🔍 Found {len(webpage_urls)} webpage URL(s) in text content")
+                
+                for url in webpage_urls:
+                    scraped_result = self.web_scraper.scrape_webpage(url)
+                    
+                    if scraped_result['status'] == 'success':
+                        processed_sources.append({
+                            "type": "text",
+                            "contents": f"Title: {scraped_result['title']}\n\n{scraped_result['content']}",
+                            "source_url": url,
+                            "source_title": scraped_result['title']
+                        })
+                    else:
+                        # Add placeholder for failed scraping
+                        processed_sources.append({
+                            "type": "text",
+                            "contents": f"[Webpage scraping failed: {url}]",
+                            "source_url": url,
+                            "source_title": "Scraping Failed"
+                        })
+            
+            # Always add the original text content
             processed_sources.append({
                 "type": "text",
                 "contents": source_info['content']

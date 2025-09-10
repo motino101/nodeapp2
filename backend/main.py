@@ -1,6 +1,8 @@
 from tensorzero import TensorZeroGateway, ToolCall
 from retriever import build_chunks, get_relevant_chunks
+from smart_source_detector import SmartSourceDetector
 import json
+import os
 
 # --- Step 1: Load question from input.json ---
 with open("sources/input.json", "r", encoding="utf-8") as f:
@@ -21,7 +23,12 @@ with TensorZeroGateway.build_embedded(
 
     relevant_chunks = get_relevant_chunks(question, all_chunks)
 
-# Build sources according to schema
+# --- SMART SOURCE DETECTION AND PROCESSING ---
+print("🔍 Smart source detection and processing...")
+detector = SmartSourceDetector()
+all_sources = detector.process_sources_directory("sources")
+
+# Build sources according to schema (combine with relevant chunks)
 sources = [
     {
         "type": "text",
@@ -30,11 +37,25 @@ sources = [
     for chunk in relevant_chunks
 ]
 
+# Add processed sources from smart detection
+sources.extend(all_sources)
+
+# Clean up sources to match the threading schema (remove extra properties)
+cleaned_sources = []
+for source in sources:
+    cleaned_source = {
+        "type": source["type"],
+        "contents": source["contents"]
+    }
+    cleaned_sources.append(cleaned_source)
+
+print(f"📊 Total sources for processing: {len(cleaned_sources)}")
+
 # --- NEW STEP 1: Thread Ideas ---
 print("Step 1: Threading ideas from sources...")
 threading_input = {
     "input": question,
-    "sources": sources
+    "sources": cleaned_sources
 }
 
 threading_response = client.inference(
@@ -62,7 +83,7 @@ if threads_data is None:
     # Fallback to original sources
     synthesis_input = {
         "input": question,
-        "sources": sources,
+        "sources": cleaned_sources,
         "threads": [],
         "thread_summary": "No threads available - using original sources only",
         "additional_instructions": ""
@@ -107,7 +128,7 @@ else:
     # Build input object for synthesis with selected threads and additional instructions
     synthesis_input = {
         "input": question,
-        "sources": sources,
+        "sources": cleaned_sources,
         "threads": selected_threads,
         "thread_summary": threads_data["summary"],
         "additional_instructions": additional_instructions if additional_instructions else ""

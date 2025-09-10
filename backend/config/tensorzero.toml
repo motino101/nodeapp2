@@ -1,3 +1,18 @@
+# -------------------------- TOOLS
+[tools.extract_google_doc_content]
+description = "Extract text content from a Google Doc using the Google Docs API"
+parameters = "tools/get_docs.json"
+
+# -------------------------- FUNCTION: EXTRACT GOOGLE DOC
+[functions.extract_google_doc]
+type = "chat"
+tools = ["extract_google_doc_content"]
+
+[functions.extract_google_doc.variants.claude_sonnet]
+type = "chat_completion"
+model = "openai::gpt-4o-mini"
+system_template = "functions/extract_google_doc/claude_variant/system.minijinja"
+
 # -------------------------- FUNCTION: THREAD IDEAS
 [functions.thread_ideas]
 type = "json"
